@@ -40,10 +40,10 @@ class App extends Component {
         </div>
 
 
-        {this.props.result && <Sparklines data={this.props.result} limit={20}>
+        {/* {this.props.result && <Sparklines data={this.props.result} limit={20}>
           <SparklinesBars style={{ fill: "#41c3f9", fillOpacity: ".25" }} />
           <SparklinesLine style={{ stroke: "#41c3f9", fill: "none" }} />
-        </Sparklines>}
+        </Sparklines>} */}
 
         {/* <button onClick={this.simpleAction}>Test redux action</button>
         <button onClick={this.resetAction.bind(this)}>rest redux action</button> */}
