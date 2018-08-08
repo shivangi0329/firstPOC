@@ -2,16 +2,40 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { simpleAction, resetAction } from './action/action';
 // import { Field, reduxForm } from 'redux-form';
-import { Sparklines,SparklinesBars,SparklinesLine } from 'react-sparklines';
+import { Sparklines, SparklinesBars, SparklinesLine } from 'react-sparklines';
+import axios from 'axios';
+let data = [];
 
 class App extends Component {
 
+  constructor(props){
+    super(props)
+    this.state = {
+      price:null,
+      // data:[]
+    }
+  }
+
   componentDidMount() {
+    axios.get('https://min-api.cryptocompare.com/data/price?fsym=BTC&tsyms=USD').then((response) => {
+      this.setState({price:response.data['USD']})
+    })
     setInterval(() => this.props.simpleAction(), 3000);
   }
 
+  componentWillUpdate(props){
+    if(props.result){
+      data = [];
+      Object.keys(props.result).map((key) => {
+        data.push(props.result[key]["high"]);
+      });
+    }
+   }
+
   simpleAction = (event) => {
-    this.props.simpleAction();
+    this.props.simpleAction().then(response => {
+      console.log("response", response);
+    });
   }
 
   resetAction = (event) => {
@@ -20,7 +44,6 @@ class App extends Component {
   }
 
   render() {
-    // const { handleSubmit } = this.props
     console.log('this.props.result', this.props.result);
     return (
       <div>
@@ -33,27 +56,23 @@ class App extends Component {
         <div>
           <label>BTC</label>
           <ul>
-            {this.props.result && Object.keys(this.props.result).map((key) => {
-              return <li value={key}>{this.props.result[key] + " " + key}</li>
-            })}
+            {this.state.price}
           </ul>
+          <div>
+          <Sparklines data={data}>
+            <SparklinesBars style={{ stroke: "white", fill: "#41c3f9", fillOpacity: ".25" }} />
+            <SparklinesLine style={{ stroke: "#41c3f9", fill: "none" }} />
+          </Sparklines>
+          </div>
         </div>
 
 
-        {/* {this.props.result && <Sparklines data={this.props.result} limit={20}>
-          <SparklinesBars style={{ fill: "#41c3f9", fillOpacity: ".25" }} />
-          <SparklinesLine style={{ stroke: "#41c3f9", fill: "none" }} />
-        </Sparklines>} */}
-
-        {/* <button onClick={this.simpleAction}>Test redux action</button>
-        <button onClick={this.resetAction.bind(this)}>rest redux action</button> */}
       </div>
     );
   }
 }
 
 const mapStateToProps = state => {
-  console.log('state....!!!!!!!!!!!!!!!!!!!', state);
   return {
     result: state.simpleReducer.result
   }

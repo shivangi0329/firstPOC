@@ -1,5 +1,5 @@
 import axios from 'axios';
-const url = "https://min-api.cryptocompare.com/data/price?fsym=BTC&tsyms=USD,JPY,EUR";
+const url = "https://min-api.cryptocompare.com/data/histoday?fsym=BTC&tsym=USD&limit=30&aggregate=3&e=CCCAGG";
 
 export const simpleAction = () => (dispatch,getState) => {
     axios.get(url)
@@ -7,7 +7,7 @@ export const simpleAction = () => (dispatch,getState) => {
       console.log(response);
       dispatch({
         type: 'SIMPLE_ACTION',
-        payload: response.data
+        payload: response.data.Data
        })
       return response;
     })
